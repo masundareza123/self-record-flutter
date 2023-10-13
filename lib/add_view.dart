@@ -16,6 +16,7 @@ class _AddViewState extends State<AddView> {
   Widget build(BuildContext context) {
     return ViewModelBuilder<ViewModel>.reactive(
         viewModelBuilder: () => ViewModel(),
+        onViewModelReady: (model) => model.initData(),
         builder: (context, model, child) => Scaffold(
               appBar: AppBar(
                 title: Text('Add Report'),
@@ -48,7 +49,7 @@ class _AddViewState extends State<AddView> {
                       ),
                     ),
                     Visibility(
-                      visible: model.imagePath == null ? true : false,
+                      visible: model.imagePath != null ? true : false,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
@@ -56,13 +57,13 @@ class _AddViewState extends State<AddView> {
                             'Longitude',
                           ),
                           Text(
-                            model.long!,
+                            model.long ?? '-',
                           ),
                         ],
                       ),
                     ),
                     Visibility(
-                      visible: model.imagePath == null ? true : false,
+                      visible: model.imagePath != null ? true : false,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
@@ -70,13 +71,13 @@ class _AddViewState extends State<AddView> {
                             'Latitude',
                           ),
                           Text(
-                            model.lat!,
+                            model.lat?? '-',
                           ),
                         ],
                       ),
                     ),
                     Visibility(
-                      visible: model.imagePath == null ? true : false,
+                      visible: model.imagePath != null ? true : false,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
@@ -84,7 +85,7 @@ class _AddViewState extends State<AddView> {
                             'Address Line',
                           ),
                           Text(
-                            model.address!,
+                            model.address?? '-',
                           ),
                         ],
                       ),

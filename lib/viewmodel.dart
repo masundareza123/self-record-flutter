@@ -19,7 +19,12 @@ class ViewModel extends ChangeNotifier {
 
   TextEditingController descriptionController = TextEditingController();
 
+  void initData() {
+    checkCameraPermission();
+    checkLocationPermission();
+  }
   Future<bool> checkCameraPermission() async {
+    await Permission.camera.request();
     final status = await Permission.camera.status;
     if (status.isGranted) {
       return status.isGranted;
@@ -30,6 +35,7 @@ class ViewModel extends ChangeNotifier {
   }
 
   Future<bool> checkLocationPermission() async {
+    await Permission.location.request();
     final status = await Permission.location.status;
 
     if (status.isGranted) {
@@ -41,8 +47,15 @@ class ViewModel extends ChangeNotifier {
   }
 
   Future<void> capturePicture() async {
+    await checkLocationPermission();
+    await checkCameraPermission();
     final image = await ImagePicker().pickImage(source: ImageSource.camera);
     if (image != null) {
+      final userLocation = await getLocation();
+      print(userLocation);
+      long = userLocation?.longitude.toString() ?? '-';
+      lat = userLocation?.latitude.toString() ?? '-';
+      address = userLocation?.address.toString() ?? '-';
       imagePath = image.path;
       capturedImage = File(image.path);
       notifyListeners();
@@ -75,10 +88,6 @@ class ViewModel extends ChangeNotifier {
   }
 
   Future<void> addReport() async {
-    final userLocation = await getLocation();
-    String long = userLocation?.longitude.toString() ?? '-';
-    String lat = userLocation?.latitude.toString() ?? '-';
-    String address = userLocation?.address.toString() ?? '-';
     List<Report> reports = await loadReports();
     reports.add(Report(
         address: address,
@@ -96,6 +105,7 @@ class ViewModel extends ChangeNotifier {
         reports.map((report) => report.toMap()).toList();
     String jsonString = jsonEncode(maps);
     prefs.setString(storageName, jsonString);
+    print('save');
   }
 
   Future<List<Report>> loadReports() async {
