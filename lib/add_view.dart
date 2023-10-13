@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:self_record/home_view.dart';
 import 'package:self_record/viewmodel.dart';
 import 'package:stacked/stacked.dart';
 
@@ -50,6 +51,16 @@ class _AddViewState extends State<AddView> {
                     ),
                     Visibility(
                       visible: model.imagePath != null ? true : false,
+                      child: TextField(
+                        controller: model.descriptionController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Deskripsi',
+                        ),
+                      ),
+                    ),
+                    Visibility(
+                      visible: model.imagePath != null ? true : false,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
@@ -78,7 +89,7 @@ class _AddViewState extends State<AddView> {
                     ),
                     Visibility(
                       visible: model.imagePath != null ? true : false,
-                      child: Row(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
                           Text(
@@ -95,6 +106,11 @@ class _AddViewState extends State<AddView> {
                       child: Text('Save'),
                       onPressed: () {
                         model.addReport();
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => HomeView(),
+                          ),
+                        );
                       },
                     ),
                   ],

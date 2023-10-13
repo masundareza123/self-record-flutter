@@ -13,6 +13,7 @@ class ViewModel extends ChangeNotifier {
   File? capturedImage;
   String? imagePath;
   String storageName = "reports";
+  ScrollController controller = ScrollController();
   String? long;
   String? lat;
   String? address;
@@ -23,27 +24,36 @@ class ViewModel extends ChangeNotifier {
     checkCameraPermission();
     checkLocationPermission();
   }
+
+  void initHome() {
+
+  }
   Future<bool> checkCameraPermission() async {
-    await Permission.camera.request();
-    final status = await Permission.camera.status;
-    if (status.isGranted) {
-      return status.isGranted;
-    } else {
-      openAppSettings();
-      return status.isDenied;
+    PermissionStatus status = await Permission.camera.request();
+    if (status == PermissionStatus.granted) {
+      return true;
+    } else if (status == PermissionStatus.denied) {
+      status;
+      return false;
+    } else if (status == PermissionStatus.permanentlyDenied) {
+      await openAppSettings();
+      return false;
     }
+    return true;
   }
 
   Future<bool> checkLocationPermission() async {
-    await Permission.location.request();
-    final status = await Permission.location.status;
-
-    if (status.isGranted) {
-      return status.isGranted;
-    } else {
-      openAppSettings();
-      return status.isDenied;
+    PermissionStatus status = await Permission.location.request();
+    if (status == PermissionStatus.granted) {
+      return true;
+    } else if (status == PermissionStatus.denied) {
+      status;
+      return false;
+    } else if (status == PermissionStatus.permanentlyDenied) {
+      await openAppSettings();
+      return false;
     }
+    return true;
   }
 
   Future<void> capturePicture() async {
@@ -68,11 +78,15 @@ class ViewModel extends ChangeNotifier {
           desiredAccuracy: LocationAccuracy.high);
       List<Placemark> placemarks =
           await placemarkFromCoordinates(position.latitude, position.longitude);
+      Placemark place = placemarks[0];
+      String address =
+          '${place.street}, ${place.subLocality}, ${place.locality}, ${place.subAdministrativeArea}, ${place.administrativeArea}, ${place.country}.${place.postalCode}';
+
 
       return LocationData(
         latitude: position.latitude,
         longitude: position.longitude,
-        address: placemarks.isNotEmpty ? placemarks[0].thoroughfare : 'N/A',
+        address: address,
       );
     } catch (e) {
       print("Error: $e");
@@ -115,7 +129,8 @@ class ViewModel extends ChangeNotifier {
       List<Map<String, dynamic>> maps =
           List<Map<String, dynamic>>.from(jsonDecode(jsonString));
       List<Report> reports = maps.map((map) => Report.fromMap(map)).toList();
-      return reports;
+      return reports
+      ;
     } else {
       return [];
     }
