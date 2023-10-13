@@ -16,7 +16,7 @@ class ViewModel extends ChangeNotifier {
   ScrollController controller = ScrollController();
   String? long;
   String? lat;
-  String? address;
+  String? addressLine;
 
   TextEditingController descriptionController = TextEditingController();
 
@@ -65,7 +65,7 @@ class ViewModel extends ChangeNotifier {
       print(userLocation);
       long = userLocation?.longitude.toString() ?? '-';
       lat = userLocation?.latitude.toString() ?? '-';
-      address = userLocation?.address.toString() ?? '-';
+      addressLine = userLocation?.address.toString() ?? '-';
       imagePath = image.path;
       capturedImage = File(image.path);
       notifyListeners();
@@ -81,8 +81,6 @@ class ViewModel extends ChangeNotifier {
       Placemark place = placemarks[0];
       String address =
           '${place.street}, ${place.subLocality}, ${place.locality}, ${place.subAdministrativeArea}, ${place.administrativeArea}, ${place.country}.${place.postalCode}';
-
-
       return LocationData(
         latitude: position.latitude,
         longitude: position.longitude,
@@ -104,7 +102,7 @@ class ViewModel extends ChangeNotifier {
   Future<void> addReport() async {
     List<Report> reports = await loadReports();
     reports.add(Report(
-        address: address,
+        address: addressLine,
         longitude: long,
         latitude: lat,
         description: descriptionController.text,

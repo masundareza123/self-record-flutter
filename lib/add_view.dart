@@ -96,7 +96,7 @@ class _AddViewState extends State<AddView> {
                             'Address Line',
                           ),
                           Text(
-                            model.address?? '-',
+                            model.addressLine?? '-',
                           ),
                         ],
                       ),
